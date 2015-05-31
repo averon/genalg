@@ -3,23 +3,13 @@ $: << File.expand_path('.')
 require 'rspec'
 require 'genalg'
 
-def config
-  {
-    crossover_rate: 0.7,
-    mutation_rate: 0.002,
-    num_generations: 100,
-    num_simulations: 10,
-    population_size: 100
-  }
-end
-
 config[:num_simulations].times do
   describe Simulation do
 
-    subject { described_class.new(config) }
+    subject { described_class.new }
 
     before :all do
-      simulation = described_class.new(config)
+      simulation = described_class.new
       @original_population = simulation.population
       simulation.run
       @resultant_population = simulation.population
@@ -50,8 +40,8 @@ config[:num_simulations].times do
         expect([@original_population, @resultant_population]).to all be_a Population
       end
 
-      it "is composed of Chromosomes" do
-        expect([@original_population.chromosomes, @resultant_population.chromosomes].flatten).to all be_a Chromosome
+      it "is an array like collection of Chromosomes" do
+        expect(@original_population.to_a + @resultant_population.to_a).to all be_a Chromosome
       end
     end
 

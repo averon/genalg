@@ -18,8 +18,8 @@ module GeneticAlgorithm
       Array.new(n) { Chromosome.new }
     end
 
-    def initialize(bin_str=rand(32).to_s(2).rjust(5, '0'))
-      @bin_str = bin_str
+    def initialize(bin_str=nil)
+      @bin_str = bin_str || random_bin_str
     end
 
     def fitness
@@ -55,6 +55,16 @@ module GeneticAlgorithm
         end
       end.join
       self
+    end
+
+    private
+
+    def random_bin_str
+      max_bin_str = '1' * config[:chromosome_size]
+      max_as_int = max_bin_str.to_i(2)
+      random_int = rand(max_as_int + 1)
+
+      random_int.to_s(2).rjust(max_bin_str.size, '0')
     end
   end
 end

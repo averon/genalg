@@ -12,10 +12,10 @@ module GeneticAlgorithm
   end
 
   class Population
-    attr_reader :chromosomes
+    include Enumerable
 
-    def initialize(chromosomes=Chromosome.generate(100))
-      @chromosomes = chromosomes
+    def initialize(chromosomes=nil)
+      @chromosomes = chromosomes || Chromosome.generate(config[:population_size])
     end
 
     def fittest
@@ -29,6 +29,22 @@ module GeneticAlgorithm
     def size
       chromosomes.length
     end
+
+    def <<(chromosome)
+      chromosomes << Chromosome(chromosome)
+    end
+
+    def each(*args, &block)
+      chromosomes.each(*args, &block)
+    end
+
+    def to_a
+      chromosomes
+    end
+
+    protected
+
+    attr_reader :chromosomes
   end
 end
 
