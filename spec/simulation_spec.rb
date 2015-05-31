@@ -38,6 +38,16 @@ config[:num_simulations].times do
       it "terminates with a #fittest Chromosome fitter than the original Population's" do
         expect(@original_population.fittest.fitness).to be > @resultant_population.fittest.fitness
       end
+
+      it "begins and ends population.size equal to config[:population_size]" do
+        expect(@original_population.size).to eq(@resultant_population.size)
+      end
+    end
+
+    describe '#population' do
+      it "returns a Population" do
+        expect([@original_population, @resultant_population]).to all be_a Population
+      end
     end
 
     describe '#select_chromosomes' do
