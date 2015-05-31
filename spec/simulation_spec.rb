@@ -23,6 +23,7 @@ config[:num_simulations].times do
       @original_population = simulation.population
       simulation.run
       @resultant_population = simulation.population
+      @run_report = simulation.analysis
     end
 
     describe '#run' do
@@ -48,11 +49,19 @@ config[:num_simulations].times do
       it "returns a Population" do
         expect([@original_population, @resultant_population]).to all be_a Population
       end
+
+      it "is composed of Chromosomes" do
+        expect([@original_population.chromosomes, @resultant_population.chromosomes].flatten).to all be_a Chromosome
+      end
     end
 
-    describe '#select_chromosomes' do
-      it "returns two Chromosomes" do
-        expect(subject.select_chromosomes).to all be_a Chromosome
+    describe '#analysis' do
+      it "logs a reasonable actual crossover rate" do
+        expect(@run_report[:crossovers][:occurences] / @run_report[:crossovers][:chances].to_f).to be_between(config[:crossover_rate] - 0.2, config[:crossover_rate] + 0.2)
+      end
+
+      it "logs a reasonable actual mutation rate" do
+        expect(@run_report[:mutations][:occurences] / @run_report[:mutations][:chances].to_f).to be_between(config[:mutation_rate] - 0.002, config[:mutation_rate] + 0.002)
       end
     end
   end

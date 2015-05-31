@@ -18,7 +18,7 @@ module GeneticAlgorithm
       Array.new(n) { Chromosome.new }
     end
 
-    def initialize(bin_str=rand(32).to_s(2))
+    def initialize(bin_str=rand(32).to_s(2).rjust(5, '0'))
       @bin_str = bin_str
     end
 
@@ -26,19 +26,31 @@ module GeneticAlgorithm
       rand
     end
 
-    def +(other)
-      [Chromosome.new, Chromosome.new]
+    def size
+      bin_str.length
     end
 
-    def maybe_mutate!(mutation_rate)
+    def maybe_crossover!(other, crossover_rate, analysis)
+      analysis[:crossovers][:chances] += 1
+      if rand > crossover_rate
+        [self, other]
+      else
+        cx_point = rand(self.size)
+        first_child = self.bin_str[0..cx_point] + other.bin_str[cx_point..-1]
+        second_child = other.bin_str[0..cx_point] + self.bin_str[cx_point..-1]
+
+        analysis[:crossovers][:occurences] += 1
+        [Chromosome(first_child), Chromosome(second_child)]
+      end
+    end
+
+    def maybe_mutate!(mutation_rate, analysis)
       @bin_str = bin_str.each_char.map do |bit|
+        analysis[:mutations][:chances] += 1
         if rand > mutation_rate
-          # TODO: Add analytics logger
-          # puts "Pristine!"
           bit
         else
-          # TODO: Add analytics logger
-          # puts "Mutated!"
+          analysis[:mutations][:occurences] += 1
           String(bit.to_i ^ 1)
         end
       end.join
