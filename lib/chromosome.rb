@@ -36,8 +36,8 @@ module GeneticAlgorithm
         [self, other]
       else
         cx_point = rand(self.size)
-        first_child = self.bin_str[0..cx_point] + other.bin_str[cx_point..-1]
-        second_child = other.bin_str[0..cx_point] + self.bin_str[cx_point..-1]
+        first_child = self.bin_str[0...cx_point] + other.bin_str[cx_point..-1]
+        second_child = other.bin_str[0...cx_point] + self.bin_str[cx_point..-1]
 
         analysis[:crossovers][:occurences] += 1
         [Chromosome(first_child), Chromosome(second_child)]

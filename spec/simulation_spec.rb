@@ -5,7 +5,6 @@ require 'genalg'
 
 config[:num_simulations].times do
   describe Simulation do
-
     subject { described_class.new }
 
     before :all do
