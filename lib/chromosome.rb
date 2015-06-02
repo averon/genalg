@@ -23,16 +23,16 @@ module GeneticAlgorithm
     end
 
     def fitness
-      rand
+      config[:selection_strategy].evaluate(self)
     end
 
     def size
       bin_str.length
     end
 
-    def maybe_crossover!(other, crossover_rate, analysis)
+    def maybe_crossover!(other, analysis)
       analysis[:crossovers][:chances] += 1
-      if rand > crossover_rate
+      if rand > config[:crossover_rate]
         [self, other]
       else
         cx_point = rand(self.size)
@@ -44,10 +44,10 @@ module GeneticAlgorithm
       end
     end
 
-    def maybe_mutate!(mutation_rate, analysis)
+    def maybe_mutate!(analysis)
       @bin_str = bin_str.each_char.map do |bit|
         analysis[:mutations][:chances] += 1
-        if rand > mutation_rate
+        if rand > config[:mutation_rate]
           bit
         else
           analysis[:mutations][:occurences] += 1

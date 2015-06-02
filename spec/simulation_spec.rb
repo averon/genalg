@@ -22,11 +22,11 @@ config[:num_simulations].times do
       end
 
       it "terminates with a #population.average_fitness larger than the original Population's" do
-        expect(@original_population.average_fitness).to be > @resultant_population.average_fitness
+        expect(@resultant_population.average_fitness).to be >= @original_population.average_fitness
       end
 
       it "terminates with a #fittest Chromosome fitter than the original Population's" do
-        expect(@original_population.fittest.fitness).to be > @resultant_population.fittest.fitness
+        expect(@resultant_population.fittest.fitness).to be >= @original_population.fittest.fitness
       end
 
       it "begins and ends population.size equal to config[:population_size]" do

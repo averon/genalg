@@ -19,11 +19,15 @@ module GeneticAlgorithm
     end
 
     def fittest
-      Chromosome.new
+      chromosomes.max_by { |c| config[:selection_strategy].evaluate(c) }
     end
 
     def average_fitness
-      rand
+      BigDecimal("#{total_fitness / size}")
+    end
+
+    def total_fitness
+      chromosomes.inject(0) { |sum, c| sum + config[:selection_strategy].evaluate(c) }
     end
 
     def size

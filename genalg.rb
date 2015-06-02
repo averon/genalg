@@ -7,6 +7,8 @@ files_to_require = Dir[
 
 files_to_require.each { |file| require file }
 
+include GeneticAlgorithm
+
 def config
   {
     crossover_rate: 0.7,
@@ -14,10 +16,9 @@ def config
     num_generations: 10,
     num_simulations: 1,
     population_size: 100,
-    chromosome_size: 16,
+    chromosome_size:  28,
     ideal_phenotype: 27,
+    selection_strategy: SelectionStrategy::IntegerCodexInfixEvaluation.new
   }
 end
-
-include GeneticAlgorithm
 

@@ -5,8 +5,8 @@ module SelectionStrategy
       total_fitness = fitnesses.inject(:+)
       proportional_fitnesses = []
 
-      fitnesses.inject(0) do |sum, f|
-        proportional_fitnesses << sum + (f / total_fitness)
+      fitnesses.inject(BigDecimal(0)) do |sum, f|
+        proportional_fitnesses << sum + (BigDecimal(f) / total_fitness)
         proportional_fitnesses.last
       end
 
@@ -17,6 +17,12 @@ module SelectionStrategy
       selection_map.find { |pf, chrom| pf.to_f >= rand }.last
     end
 
+    def evaluate(chromosome)
+      denominator = config[:ideal_phenotype] - phenotype(chromosome)
+      result = denominator == 0 ? 2.0 : (BigDecimal('1.0') / BigDecimal(denominator)).abs
+      BigDecimal("#{result}")
+    end
+
     private
 
     def codex
@@ -25,19 +31,12 @@ module SelectionStrategy
       @codex  ||= Hash[@codons.zip(@values)]
     end
 
-    def evaluate(chromosome)
-      denominator = config[:ideal_phenotype] - phenotype(chromosome)
-      result = denominator == 0 ? 1.0 : (1.0 / denominator).abs
-      BigDecimal("#{result}")
-    end
-
     def phenotype(chromosome)
       raise("Invalid Chromosome: #{chromosome.inspect}. ",
             "We expect its bin_str length to be exactly divisible by 4. ",
             "Instead, there is a remainder of #{chromosome.bin_str.length % 4}.") unless chromosome.bin_str.length % 4 == 0
 
-      original_aas = chromosome.bin_str.chars.each_slice(4).map { |codon| codex[codon.join] } << :terminate
-      amino_acids = original_aas.clone
+      amino_acids = chromosome.bin_str.chars.each_slice(4).map { |codon| codex[codon.join] } << :terminate
 
       # Curried evaluator function will return itself
       # until it receives arguments of Integer, Symbol, Integer
@@ -48,9 +47,6 @@ module SelectionStrategy
       evaluator = proc do |n, op, m|
         args = []
 
-        # Edgecases:
-        # args = [1], n, op, m = [:1, :terminate]
-        # args = [1, :+], n, op, m = [:+, :terminate]
         inner_evaluator = proc do |*aas|
           received_terminate = false
 
@@ -61,7 +57,6 @@ module SelectionStrategy
             next args[2] ||= aa if  args[1] && aa.is_a?(Fixnum)
           end
 
-          # TODO: This is kind of confusing. Refactor if possible.
           if args.map { |a| a.class } == [Fixnum, Symbol, Fixnum]
             begin
               args[0].send(args[1], args[2])
