@@ -12,7 +12,7 @@ config[:num_simulations].times do
       @original_population = simulation.population
       simulation.run
       @resultant_population = simulation.population
-      @run_report = simulation.analysis
+      @run_report = ANALYSIS
     end
 
     describe '#run' do
@@ -31,6 +31,14 @@ config[:num_simulations].times do
 
       it "begins and ends population.size equal to config[:population_size]" do
         expect(@original_population.size).to eq(@resultant_population.size)
+      end
+
+      it "returns a run report" do
+        expect(subject.run).to eq(ANALYSIS)
+      end
+
+      it "finds at least one ideal chromosome" do
+        expect(subject.run[:solutions]).to be > 0
       end
     end
 

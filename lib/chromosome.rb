@@ -30,8 +30,8 @@ module GeneticAlgorithm
       bin_str.length
     end
 
-    def maybe_crossover!(other, analysis)
-      analysis[:crossovers][:chances] += 1
+    def maybe_crossover!(other)
+      ANALYSIS[:crossovers][:chances] += 1
       if rand > config[:crossover_rate]
         [self, other]
       else
@@ -39,18 +39,18 @@ module GeneticAlgorithm
         first_child = self.bin_str[0...cx_point] + other.bin_str[cx_point..-1]
         second_child = other.bin_str[0...cx_point] + self.bin_str[cx_point..-1]
 
-        analysis[:crossovers][:occurences] += 1
+        ANALYSIS[:crossovers][:occurences] += 1
         [Chromosome(first_child), Chromosome(second_child)]
       end
     end
 
-    def maybe_mutate!(analysis)
+    def maybe_mutate!
       @bin_str = bin_str.each_char.map do |bit|
-        analysis[:mutations][:chances] += 1
+        ANALYSIS[:mutations][:chances] += 1
         if rand > config[:mutation_rate]
           bit
         else
-          analysis[:mutations][:occurences] += 1
+          ANALYSIS[:mutations][:occurences] += 1
           String(bit.to_i ^ 1)
         end
       end.join

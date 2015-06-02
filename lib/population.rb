@@ -19,7 +19,9 @@ module GeneticAlgorithm
     end
 
     def fittest
-      chromosomes.max_by { |c| config[:selection_strategy].evaluate(c) }
+      fittest = chromosomes.max_by { |c| config[:selection_strategy].evaluate(c) }
+      ANALYSIS[:solutions] += 1 if fittest.fitness == 2.0
+      fittest
     end
 
     def average_fitness

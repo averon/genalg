@@ -9,6 +9,20 @@ files_to_require.each { |file| require file }
 
 include GeneticAlgorithm
 
+SELECTION_STRATEGY = SelectionStrategy::IntegerCodexInfixEvaluation.new
+ANALYSIS = {
+    generations: 0,
+    mutations: {
+      chances: 0,
+      occurences: 0,
+    },
+    crossovers: {
+      chances: 0,
+      occurences: 0,
+    },
+    solutions: 0
+  }
+
 def config
   {
     crossover_rate: 0.7,
@@ -18,7 +32,8 @@ def config
     population_size: 100,
     chromosome_size:  28,
     ideal_phenotype: 27,
-    selection_strategy: SelectionStrategy::IntegerCodexInfixEvaluation.new
+    selection_strategy: SELECTION_STRATEGY
   }
 end
+
 

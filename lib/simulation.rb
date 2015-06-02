@@ -1,25 +1,14 @@
 module GeneticAlgorithm
   class Simulation
-    attr_accessor :population, :analysis
+    attr_accessor :population
 
     def initialize(options={})
       @population         = Population.new(options[:chromosomes])
-      @analysis = {
-        generations: 0,
-        mutations: {
-          chances: 0,
-          occurences: 0,
-        },
-        crossovers: {
-          chances: 0,
-          occurences: 0,
-        },
-      }
     end
 
     def run
       config[:num_generations].times { next_generation }
-      population.fittest
+      ANALYSIS
     end
 
     def next_generation
@@ -27,10 +16,10 @@ module GeneticAlgorithm
       half_population_size = config[:population_size] / 2
       half_population_size.times do
         chromosomes = select_chromosomes
-        chromosomes = chromosomes.first.maybe_crossover!(chromosomes.last, analysis)
-        chromosomes.each { |c| new_population << c.maybe_mutate!(analysis) }
+        chromosomes = chromosomes.first.maybe_crossover!(chromosomes.last)
+        chromosomes.each { |c| new_population << c.maybe_mutate! }
       end
-      analysis[:generations] += 1
+      ANALYSIS[:generations] += 1
       @population = new_population
     end
 
